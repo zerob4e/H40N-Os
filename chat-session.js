@@ -61,27 +61,44 @@
 
   function decodeNotice(raw) {
     if (typeof raw !== "string" || !raw) {
-      return { key: "", text: "" };
+      return { key: "", text: "", expired: false };
     }
 
     try {
       const parsed = JSON.parse(raw);
+
       if (
         parsed &&
         typeof parsed === "object" &&
         typeof parsed.text === "string"
       ) {
+        const expiresAt = Number(parsed.expiresAt || 0);
+        const createdAt = Number(parsed.createdAt || 0);
+
+        // Novo formato: se passou da janela, jamais exibe.
+        if (expiresAt && Date.now() > expiresAt) {
+          return { key: raw, text: "", expired: true };
+        }
+
+        // Compatibilidade com a versão anterior que tinha apenas createdAt.
+        // Qualquer aviso com mais de 15 s é considerado antigo.
+        if (!expiresAt && createdAt && Date.now() - createdAt > 15000) {
+          return { key: raw, text: "", expired: true };
+        }
+
         return {
           key: raw,
-          text: parsed.text.trim()
+          text: parsed.text.trim(),
+          expired: false
         };
       }
     } catch {}
 
-    // Compatibilidade com notices antigos, que eram uma string simples.
+    // Notices legados em string simples não devem reaparecer.
     return {
       key: raw,
-      text: raw.trim()
+      text: "",
+      expired: true
     };
   }
 
@@ -209,10 +226,23 @@
       if (!noticePrimed) {
         noticeBaseline = incomingNotice.key;
         noticePrimed = true;
+
+        // Primeiro snapshot é sempre silencioso.
+        hideNotice();
+
+        if (incomingNotice.expired && role() === "echo" && incomingNotice.key) {
+          void deleteRemoteNotice(incomingNotice.key);
+        }
       } else if (incomingNotice.key !== noticeBaseline) {
         noticeBaseline = incomingNotice.key;
 
-        if (incomingNotice.text) {
+        if (incomingNotice.expired) {
+          hideNotice();
+
+          if (role() === "echo" && incomingNotice.key) {
+            void deleteRemoteNotice(incomingNotice.key);
+          }
+        } else if (incomingNotice.text) {
           showNotice(incomingNotice.text);
         } else {
           hideNotice();
@@ -293,6 +323,40 @@
     return data;
   }
 
+  async function deleteRemoteNotice(expectedWire = "") {
+    try {
+      if (!token()) return;
+
+      let response;
+
+      if (local()) {
+        // O servidor local pode não ter endpoint específico de DELETE.
+        // Nesse caso, usamos o Firebase diretamente.
+        response = await fetchTimed(
+          `${DB}/chat/notice.json?auth=${encodeURIComponent(token())}`,
+          { method:"DELETE" },
+          8000
+        );
+      } else {
+        response = await fetchTimed(
+          `${DB}/chat/notice.json?auth=${encodeURIComponent(token())}`,
+          { method:"DELETE" },
+          8000
+        );
+      }
+
+      if (!response.ok) {
+        throw new Error(`NOTICE_DELETE_HTTP_${response.status}`);
+      }
+
+      if (!expectedWire || noticeBaseline === expectedWire) {
+        noticeBaseline = "";
+      }
+    } catch (error) {
+      console.warn("[NØAH OS] notice cleanup failed", error);
+    }
+  }
+
   async function transmitNotice(text) {
     if (role() !== "echo") throw new Error("ECHO_CLEARANCE_REQUIRED");
 
@@ -301,11 +365,13 @@
     const cleanText = String(text || "").trim();
     if (!cleanText) throw new Error("EMPTY_NOTICE");
 
-    // Continua sendo uma STRING no Firebase (as rules atuais continuam válidas),
-    // mas inclui timestamp para que o mesmo texto possa ser enviado novamente.
+    const createdAt = Date.now();
+
+    // Continua sendo uma string para manter compatibilidade com as rules atuais.
     const wireNotice = JSON.stringify({
       text: cleanText,
-      createdAt: Date.now()
+      createdAt,
+      expiresAt: createdAt + 10000
     });
 
     let response;
@@ -343,6 +409,12 @@
     noticeBaseline = wireNotice;
     showNotice(cleanText);
     setRuntime("tx", "NOTICE DELIVERED");
+
+    // O aviso é um EVENTO, não um registro permanente.
+    // Após 10 s, remove o próprio valor do Firebase.
+    setTimeout(() => {
+      void deleteRemoteNotice(wireNotice);
+    }, 10000);
   }
 
   function mountChannel(channel) {
@@ -499,6 +571,37 @@
     legacyNoticeStyle.textContent =
       ".echo-notice:not(.session-live-notice){display:none!important}";
     document.head.appendChild(legacyNoticeStyle);
+
+    const removeLegacyNotices = root => {
+      if (!(root instanceof Element || root instanceof Document)) return;
+
+      if (root instanceof Element &&
+          root.matches?.(".echo-notice:not(.session-live-notice)")) {
+        root.remove();
+        return;
+      }
+
+      root.querySelectorAll?.(
+        ".echo-notice:not(.session-live-notice)"
+      ).forEach(el => el.remove());
+    };
+
+    removeLegacyNotices(document);
+
+    const legacyObserver = new MutationObserver(records => {
+      for (const record of records) {
+        record.addedNodes.forEach(node => {
+          if (node instanceof Element) {
+            removeLegacyNotices(node);
+          }
+        });
+      }
+    });
+
+    legacyObserver.observe(document.body, {
+      childList:true,
+      subtree:true
+    });
 
     discoverChannels();
 
