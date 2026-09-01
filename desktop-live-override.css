@@ -1,0 +1,218 @@
+/* =========================================================
+   NØAH OS — LIVE DESKTOP + PERSONAL WALLPAPER
+   ========================================================= */
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: #111 !important;
+}
+
+.desktop {
+  background-image:
+    linear-gradient(
+      rgba(0, 0, 0, 0.14),
+      rgba(0, 0, 0, 0.28)
+    ),
+    url("./background-noah.png") !important;
+
+  background-size: cover !important;
+  background-position: center right !important;
+  background-repeat: no-repeat !important;
+  background-color: #111 !important;
+}
+
+body.antialiased::before,
+body.antialiased::after,
+.desktop::before {
+  display: none !important;
+}
+
+.desktop-grid {
+  display: none !important;
+}
+
+/* TOP BAR ------------------------------------------------------- */
+
+.system-strip {
+  height: 36px !important;
+  padding: 0 16px !important;
+  font-size: 10px !important;
+  background: linear-gradient(
+    180deg,
+    rgba(24, 24, 26, .90),
+    rgba(17, 17, 19, .88)
+  ) !important;
+  border-bottom: 1px solid rgba(255,255,255,.09) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.linux-activities b {
+  font-size: 14px !important;
+  letter-spacing: .02em !important;
+  color: #f1f1f1 !important;
+}
+
+.linux-activities span {
+  padding-left: 13px !important;
+  font-size: 13px !important;
+  color: #a9a9a9 !important;
+}
+
+.system-strip-center {
+  font-size: 12px !important;
+  letter-spacing: .02em !important;
+  color: #bdbdbd !important;
+}
+
+.system-strip-center span {
+  margin-left: 7px !important;
+  font-size: 13px !important;
+  color: #eeeeee !important;
+}
+
+.linux-system-area {
+  font-size: 12px !important;
+  gap: 10px !important;
+  color: #a3a3a3 !important;
+}
+
+.linux-system-area button {
+  width: 31px !important;
+  height: 29px !important;
+  border-radius: 8px !important;
+}
+
+/* MENU LATERAL ------------------------------------------------- */
+
+.desktop-icons {
+  z-index: 210 !important;
+  top: 48px !important;
+  left: 8px !important;
+  width: 88px !important;
+  padding: 10px 8px !important;
+  gap: 8px !important;
+  border-radius: 18px !important;
+
+  background: linear-gradient(
+    180deg,
+    rgba(34, 34, 37, .88),
+    rgba(24, 24, 27, .86)
+  ) !important;
+
+  border: 1px solid rgba(255,255,255,.12) !important;
+
+  box-shadow:
+    0 16px 42px rgba(0,0,0,.36),
+    inset 0 1px 0 rgba(255,255,255,.03) !important;
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  max-height: calc(100vh - 72px) !important;
+}
+
+.desktop-icon {
+  width: 70px !important;
+  height: 70px !important;
+  margin-inline: auto !important;
+  padding: 4px !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  color: #d3d3d3 !important;
+
+  transition:
+    background .16s ease,
+    transform .16s ease,
+    box-shadow .16s ease !important;
+}
+
+.desktop-icon:hover,
+.desktop-icon:focus,
+.desktop-icon.active {
+  background: rgba(255,255,255,.10) !important;
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.07);
+}
+
+.icon-plate {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 14px !important;
+
+  background: linear-gradient(
+    145deg,
+    rgba(61,61,66,.96),
+    rgba(37,37,41,.96)
+  ) !important;
+
+  border: 1px solid rgba(255,255,255,.12) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 4px 14px rgba(0,0,0,.18) !important;
+
+  color: #e4e4e4 !important;
+}
+
+.icon-plate svg {
+  width: 30px !important;
+  height: 30px !important;
+  stroke-width: 1.9 !important;
+}
+
+.desktop-icon strong,
+.desktop-icon small {
+  display: none !important;
+}
+
+.os-window {
+  box-shadow: 0 24px 70px rgba(0,0,0,.55) !important;
+}
+
+.window-titlebar {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@media (max-width: 760px) {
+  .desktop {
+    background-position: 65% center !important;
+  }
+
+  .desktop-icons {
+    width: 78px !important;
+    left: 8px !important;
+    top: 46px !important;
+    padding: 8px 6px !important;
+  }
+
+  .desktop-icon {
+    width: 62px !important;
+    height: 62px !important;
+  }
+
+  .icon-plate {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .icon-plate svg {
+    width: 27px !important;
+    height: 27px !important;
+  }
+
+  .system-strip {
+    height: 34px !important;
+  }
+
+  .linux-activities b {
+    font-size: 13px !important;
+  }
+
+  .linux-activities span {
+    font-size: 12px !important;
+  }
+}

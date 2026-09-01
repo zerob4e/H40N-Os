@@ -1,0 +1,21 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "chat": {
+      "messages": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email === 'operator@h40n-terminal.app' && !newData.exists()",
+        "$messageId": {
+          ".write": "auth != null && ((auth.token.email === 'noah-access@h40n-terminal.app' && newData.child('from').val() === 'noah') || (auth.token.email === 'operator@h40n-terminal.app' && newData.child('from').val() === 'echo'))",
+          ".validate": "newData.exists() && newData.hasChildren(['from','body','createdAt']) && (newData.child('from').val() === 'noah' || newData.child('from').val() === 'echo') && newData.child('body').isString() && newData.child('body').val().length > 0 && newData.child('body').val().length <= 2000 && newData.child('createdAt').isNumber()"
+        }
+      },
+      "notice": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email === 'operator@h40n-terminal.app'",
+        ".validate": "newData.isString() && newData.val().length <= 500"
+      }
+    }
+  }
+}

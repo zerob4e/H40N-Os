@@ -1,0 +1,10 @@
+
+.narrative-secured input[type="password"]{
+  display:none!important;
+}
+.narrative-secured button[type="submit"]{
+  min-width:170px;
+}
+.narrative-secured button[type="submit"]:disabled{
+  cursor:wait;
+}

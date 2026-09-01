@@ -1,0 +1,19 @@
+
+/* TERMINAL COMMAND CENTER --------------------------------------- */
+.terminal-app .terminal-history{
+  padding-bottom:12px;
+}
+
+.terminal-app .terminal-history pre{
+  white-space:pre-wrap!important;
+  line-height:1.55!important;
+}
+
+.terminal-app form input:disabled{
+  opacity:.55;
+  cursor:wait;
+}
+
+.terminal-app form input::placeholder{
+  color:rgba(255,255,255,.28);
+}

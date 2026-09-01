@@ -1,0 +1,181 @@
+
+/* CHAT CENTRAL --------------------------------------------------- */
+.echo-channel > header{
+  display:none!important;
+}
+
+.session-live-messages{
+  min-height:0;
+  padding:20px 22px 14px!important;
+  gap:9px!important;
+  align-items:flex-start;
+}
+
+/* Cards de mensagem mais compactos e com largura proporcional ao texto. */
+.session-live-messages .echo-line{
+  min-width:0!important;
+  width:max-content;
+  max-width:min(68%, 560px)!important;
+  padding:9px 12px 8px!important;
+  border-radius:7px!important;
+}
+
+.session-live-messages .echo-line > span{
+  font-size:9px!important;
+  letter-spacing:.12em!important;
+}
+
+.session-live-messages .echo-line p,
+.session-live-messages .echo-line.noah p{
+  margin:5px 0 4px!important;
+  font-size:13px!important;
+  line-height:1.42!important;
+}
+
+.session-live-messages .echo-line time{
+  display:block;
+  margin-top:1px;
+  font-size:8px!important;
+  line-height:1!important;
+  opacity:.58;
+  text-align:right;
+}
+
+/* NØAH à direita, E.C.H.O. à esquerda — leitura mais natural. */
+.session-live-messages .echo-line.noah{
+  align-self:flex-end;
+}
+
+.session-live-messages .echo-line.echo{
+  align-self:flex-start;
+}
+
+/* Composer mais discreto. */
+.echo-composer{
+  padding:7px 9px!important;
+  gap:7px!important;
+}
+
+.echo-composer input{
+  height:36px!important;
+  padding:0 11px!important;
+  font-size:13px!important;
+  border-radius:6px!important;
+}
+
+.echo-composer button{
+  min-width:92px!important;
+  height:36px!important;
+  padding:0 14px!important;
+  font-size:9px!important;
+  letter-spacing:.1em!important;
+  border-radius:6px!important;
+}
+
+/* LATERAL -------------------------------------------------------- */
+
+/* ORIGIN, STATE e ACCESS somem. HOST continua. */
+.echo-status dl > div:nth-child(1),
+.echo-status dl > div:nth-child(2),
+.echo-status dl > div:nth-child(4){
+  display:none!important;
+}
+
+/* HOST vira uma linha pequena e limpa. */
+.echo-status dl{
+  margin-top:11px!important;
+  margin-bottom:0!important;
+  flex:none!important;
+}
+
+.echo-status dl > div:nth-child(3){
+  display:flex!important;
+  min-height:34px!important;
+  padding:7px 4px!important;
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  align-items:center;
+}
+
+.echo-status dl > div:nth-child(3) dt,
+.echo-status dl > div:nth-child(3) dd{
+  font-size:9px!important;
+}
+
+/* Menos espaço ornamental no topo para dar mais área ao terminal. */
+.echo-status{
+  overflow:hidden!important;
+}
+
+.echo-status .echo-orbit{
+  margin-top:18px!important;
+  margin-bottom:12px!important;
+  flex:none;
+}
+
+.echo-status > h3{
+  margin-bottom:4px!important;
+}
+
+.echo-status > p{
+  margin-bottom:4px!important;
+  font-size:9px!important;
+}
+
+/* PROCESS OUTPUT ocupa todo o espaço restante. */
+.echo-side-log{
+  flex:1 1 0!important;
+  min-height:0!important;
+  margin-top:10px!important;
+  padding:10px 11px!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+
+.echo-side-log > span{
+  flex:none;
+  margin-bottom:8px!important;
+  font-size:8px!important;
+}
+
+/* Um único terminal; remove visualmente qualquer bloco antigo extra. */
+.echo-side-log > .session-runtime-log{
+  flex:1 1 0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0 2px 4px 0!important;
+  border:0!important;
+  color:#aaa!important;
+  font-size:8.5px!important;
+  line-height:1.62!important;
+  overflow:auto!important;
+  scrollbar-width:thin;
+}
+
+.echo-side-log > pre:not(.session-runtime-log){
+  display:none!important;
+}
+
+.echo-side-log .terminal-cursor{
+  flex:none;
+  margin-top:5px!important;
+}
+
+@media (max-width:759px){
+  .session-live-messages{
+    padding:14px!important;
+  }
+
+  .session-live-messages .echo-line{
+    max-width:82%!important;
+  }
+
+  .session-live-messages .echo-line p,
+  .session-live-messages .echo-line.noah p{
+    font-size:12px!important;
+  }
+
+  .echo-side-log > .session-runtime-log{
+    font-size:8px!important;
+  }
+}
