@@ -572,37 +572,6 @@
       ".echo-notice:not(.session-live-notice){display:none!important}";
     document.head.appendChild(legacyNoticeStyle);
 
-    const removeLegacyNotices = root => {
-      if (!(root instanceof Element || root instanceof Document)) return;
-
-      if (root instanceof Element &&
-          root.matches?.(".echo-notice:not(.session-live-notice)")) {
-        root.remove();
-        return;
-      }
-
-      root.querySelectorAll?.(
-        ".echo-notice:not(.session-live-notice)"
-      ).forEach(el => el.remove());
-    };
-
-    removeLegacyNotices(document);
-
-    const legacyObserver = new MutationObserver(records => {
-      for (const record of records) {
-        record.addedNodes.forEach(node => {
-          if (node instanceof Element) {
-            removeLegacyNotices(node);
-          }
-        });
-      }
-    });
-
-    legacyObserver.observe(document.body, {
-      childList:true,
-      subtree:true
-    });
-
     discoverChannels();
 
     discoverTimer = setInterval(discoverChannels, 450);
