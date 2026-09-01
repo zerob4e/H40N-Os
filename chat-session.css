@@ -179,3 +179,8 @@
     font-size:8px!important;
   }
 }
+
+/* Remove notificações automáticas antigas do bundle */
+.echo-notice:not(.session-live-notice) {
+  display: none !important;
+}
