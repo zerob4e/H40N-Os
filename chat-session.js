@@ -8,6 +8,9 @@
 
   let messages = [];
   let notice = "";
+  let noticePrimed = false;
+  let noticeBaseline = "";
+  let noticeTimer = null;
   let pollTimer = null;
   let discoverTimer = null;
   let snapshotBusy = false;
@@ -54,6 +57,62 @@
       .filter(v => v.body)
       .sort((a,b) => a.createdAt - b.createdAt)
       .slice(-250);
+  }
+
+  function decodeNotice(raw) {
+    if (typeof raw !== "string" || !raw) {
+      return { key: "", text: "" };
+    }
+
+    try {
+      const parsed = JSON.parse(raw);
+      if (
+        parsed &&
+        typeof parsed === "object" &&
+        typeof parsed.text === "string"
+      ) {
+        return {
+          key: raw,
+          text: parsed.text.trim()
+        };
+      }
+    } catch {}
+
+    // Compatibilidade com notices antigos, que eram uma string simples.
+    return {
+      key: raw,
+      text: raw.trim()
+    };
+  }
+
+  function hideNotice() {
+    notice = "";
+
+    if (noticeTimer) {
+      clearTimeout(noticeTimer);
+      noticeTimer = null;
+    }
+
+    document.querySelector(".session-live-notice")?.remove();
+  }
+
+  function showNotice(text) {
+    notice = String(text || "").trim();
+
+    if (!notice) {
+      hideNotice();
+      return;
+    }
+
+    renderNotice();
+
+    if (noticeTimer) clearTimeout(noticeTimer);
+
+    noticeTimer = setTimeout(() => {
+      notice = "";
+      document.querySelector(".session-live-notice")?.remove();
+      noticeTimer = null;
+    }, 9000);
   }
 
   function messageKey() {
@@ -142,7 +201,24 @@
       }
 
       messages = normalize(data?.messages);
-      notice = typeof data?.notice === "string" ? data.notice : "";
+
+      const incomingNotice = decodeNotice(data?.notice);
+
+      // O notice encontrado no PRIMEIRO snapshot vira apenas baseline.
+      // Assim uma mensagem antiga do Firebase não reaparece ao abrir/recarregar.
+      if (!noticePrimed) {
+        noticeBaseline = incomingNotice.key;
+        noticePrimed = true;
+      } else if (incomingNotice.key !== noticeBaseline) {
+        noticeBaseline = incomingNotice.key;
+
+        if (incomingNotice.text) {
+          showNotice(incomingNotice.text);
+        } else {
+          hideNotice();
+        }
+      }
+
       renderData();
 
       setRuntime("link", "CONNECTED");
@@ -222,6 +298,16 @@
 
     setRuntime("tx", "NOTICE INJECT");
 
+    const cleanText = String(text || "").trim();
+    if (!cleanText) throw new Error("EMPTY_NOTICE");
+
+    // Continua sendo uma STRING no Firebase (as rules atuais continuam válidas),
+    // mas inclui timestamp para que o mesmo texto possa ser enviado novamente.
+    const wireNotice = JSON.stringify({
+      text: cleanText,
+      createdAt: Date.now()
+    });
+
     let response;
 
     if (local()) {
@@ -231,7 +317,7 @@
         body:JSON.stringify({
           idToken:token(),
           role:"echo",
-          text
+          text:wireNotice
         })
       }, 10000);
     } else {
@@ -240,7 +326,7 @@
         {
           method:"PUT",
           headers:{"content-type":"application/json"},
-          body:JSON.stringify(text)
+          body:JSON.stringify(wireNotice)
         },
         10000
       );
@@ -253,8 +339,9 @@
       throw new Error(reason);
     }
 
-    notice = text;
-    renderNotice();
+    noticePrimed = true;
+    noticeBaseline = wireNotice;
+    showNotice(cleanText);
     setRuntime("tx", "NOTICE DELIVERED");
   }
 
@@ -406,6 +493,13 @@
   });
 
   window.addEventListener("DOMContentLoaded", () => {
+    // Defesa adicional: o bundle legado ainda sabe criar .echo-notice sozinho.
+    // Só notices autenticados desta camada (.session-live-notice) ficam visíveis.
+    const legacyNoticeStyle = document.createElement("style");
+    legacyNoticeStyle.textContent =
+      ".echo-notice:not(.session-live-notice){display:none!important}";
+    document.head.appendChild(legacyNoticeStyle);
+
     discoverChannels();
 
     discoverTimer = setInterval(discoverChannels, 450);
@@ -417,5 +511,6 @@
   window.addEventListener("beforeunload", () => {
     if (discoverTimer) clearInterval(discoverTimer);
     if (pollTimer) clearInterval(pollTimer);
+    if (noticeTimer) clearTimeout(noticeTimer);
   }, {once:true});
 })();
