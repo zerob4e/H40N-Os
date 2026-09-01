@@ -16,6 +16,36 @@
         ".write": "auth != null && auth.token.email === 'operator@h40n-terminal.app'",
         ".validate": "newData.isString() && newData.val().length <= 500"
       }
+    },
+    "thoughts": {
+      ".read": "auth != null && (auth.token.email === 'noah-access@h40n-terminal.app' || auth.token.email === 'operator@h40n-terminal.app')",
+      "records": {
+        "$id": {
+          ".write": "auth != null && (auth.token.email === 'noah-access@h40n-terminal.app' || auth.token.email === 'operator@h40n-terminal.app')",
+          ".validate": "!newData.exists() || (newData.hasChildren(['id','title','meta','body']) && newData.child('id').isString() && newData.child('title').isString() && newData.child('meta').isString() && newData.child('body').isString())"
+        }
+      },
+      "deleted": {
+        "$id": {
+          ".write": "auth != null && (auth.token.email === 'noah-access@h40n-terminal.app' || auth.token.email === 'operator@h40n-terminal.app')",
+          ".validate": "!newData.exists() || newData.val() === true"
+        }
+      }
+    },
+    "moonNotes": {
+      ".read": "auth != null && (auth.token.email === 'noah-access@h40n-terminal.app' || auth.token.email === 'operator@h40n-terminal.app')",
+      "records": {
+        "$id": {
+          ".write": "auth != null && (auth.token.email === 'noah-access@h40n-terminal.app' || auth.token.email === 'operator@h40n-terminal.app')",
+          ".validate": "!newData.exists() || (newData.hasChildren(['id','title','date','body']) && newData.child('id').isString() && newData.child('title').isString() && newData.child('date').isString() && newData.child('body').isString())"
+        }
+      },
+      "deleted": {
+        "$id": {
+          ".write": "auth != null && (auth.token.email === 'noah-access@h40n-terminal.app' || auth.token.email === 'operator@h40n-terminal.app')",
+          ".validate": "!newData.exists() || newData.val() === true"
+        }
+      }
     }
   }
 }
