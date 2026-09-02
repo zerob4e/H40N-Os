@@ -21,21 +21,25 @@
   };
 
   function genericMeta(name) {
-    const clean = name
-      .replace(/\.html$/i, "")
-      .replace(/^arq[-_]/i, "")
-      .replace(/[-_]+/g, " / ")
-      .toUpperCase();
-
-    return clean || "NKT / DOCUMENTO CRIPTOGRAFADO";
-  }
-
-  function displayName(name) {
-  return name
+  const clean = name
     .replace(/\.html$/i, "")
     .replace(/^arq[-_]/i, "")
-    .replace(/[-_]+/g, " ")
-    .trim();
+    .replace(/[-_]+/g, " / ")
+    .toUpperCase();
+
+  return clean || "NKT / DOCUMENTO CRIPTOGRAFADO";
+  }
+  
+  function metaFor(name) {
+    return KNOWN_META[name] || genericMeta(name);
+  }
+  
+  function displayName(name) {
+    return name
+      .replace(/\.html$/i, "")
+      .replace(/^arq[-_]/i, "")
+      .replace(/[-_]+/g, " ")
+      .trim();
   }
 
   function relativeUrl(name) {
