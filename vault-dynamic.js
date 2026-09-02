@@ -30,8 +30,12 @@
     return clean || "NKT / DOCUMENTO CRIPTOGRAFADO";
   }
 
-  function metaFor(name) {
-    return KNOWN_META[name] || genericMeta(name);
+  function displayName(name) {
+  return name
+    .replace(/\.html$/i, "")
+    .replace(/^arq[-_]/i, "")
+    .replace(/[-_]+/g, " ")
+    .trim();
   }
 
   function relativeUrl(name) {
@@ -147,7 +151,7 @@
     const actions = header?.querySelector(":scope > div");
     const iframe = reader.querySelector("iframe");
 
-    if (nameEl) nameEl.textContent = file.name;
+    if (nameEl) nameEl.textContent = displayName(file.name);
 
     if (actions) {
       actions.innerHTML = "";
@@ -226,7 +230,7 @@
       button.innerHTML = `
         ${fileIcon()}
         <span>
-          <b>${escapeHtml(file.name)}</b>
+          <b>${escapeHtml(displayName(file.name))}</b>
           <small>${escapeHtml(metaFor(file.name))}</small>
         </span>
         ${chevronIcon()}
