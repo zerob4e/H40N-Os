@@ -529,7 +529,7 @@
 
     try {
       const command = role() === "echo"
-        ? text.match(/^\/(?:notify|notice)\s+(.+)/i)?.[1]?.trim()
+        ? text.match(/^\/notify\s+(.+)/i)?.[1]?.trim()
         : null;
 
       if (command) {

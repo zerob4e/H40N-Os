@@ -1,0 +1,60 @@
+NODE-07 // SHELL REVISION // CLEAN COMMAND SET
+
+VISIBLE SHELL HELP
+- help
+- ls [path]
+- pwd
+- whoami
+- hostname
+- status
+- gtk-launch <application>
+- echo <text>
+- clear
+- logout
+
+REGISTERED DESKTOP APPS
+- gtk-launch folders
+- gtk-launch echo-chat
+- gtk-launch thoughts
+- gtk-launch terminal
+
+UNINDEXED / HIDDEN ROUTINES
+These remain functional but are intentionally absent from help and normal app listings.
+- haven-scan --gomui
+- ward status
+- ward protect --enable
+- ward protect --status
+- ward protect --close
+- ward privacy --enable
+- ward privacy --rotate
+- ward scan --deep
+- ward inspect ECH-00
+- ward purge ECH-00
+- trace --id <PRIVATE_CODE>
+- folders --status
+- chat --status
+- gtk-launch lunar-notes
+- chat --clear
+- chat --clear confirm
+- chat --clear cancel
+
+E.C.H.O. CHAT COMMAND
+- /notify <message>
+
+REMOVED LEGACY / REDUNDANT COMMANDS
+- echo --status
+- vault --status
+- nekutai --status
+- ward (bare alias)
+- ward inspect echo
+- ward purge echo
+- mugunghwa trace
+- mugunghwa trace --id <PRIVATE_CODE>
+- gtk-launch mugunghwa
+- /notice
+
+SYSTEM CLEANUP
+- vault.mountd renamed to crypt.mountd
+- MUGUNGHWA can only materialize through a successful trace command
+- ECH-00 inspection now flows through WARD only
+- Direct app-name shortcuts remain disabled
